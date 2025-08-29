@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import "./App.css";
+import { FaReact, FaNodeJs, FaPython, FaDesktop, FaCog, FaUserAlt, FaDraftingCompass } from "react-icons/fa";
+import { SiUnity, SiUnrealengine, SiMongodb } from "react-icons/si";
+import { GrMysql } from "react-icons/gr";
 
 type MenuItem = {
   id: string;
   title: string;
+  icon?: JSX.Element;
   children?: MenuItem[];
+  contentUrl?: string;
 };
 
 const menu: MenuItem[] = [
@@ -15,14 +20,33 @@ const menu: MenuItem[] = [
       {
         id: "frontend",
         title: "Front-end",
-        children: [{ id: "react", title: "React" }]
+        icon: <FaDesktop />,
+        children: [
+          {
+            id: "react",
+            title: "React",
+            icon: <FaReact />,
+            contentUrl: "https://www.youtube.com/embed/2RWsLmu8yVc"
+          }
+        ]
       },
       {
         id: "backend",
         title: "Back-end",
+        icon: <FaCog />,
         children: [
-          { id: "node", title: "Node" },
-          { id: "python", title: "Python + Django" }
+          {
+            id: "node",
+            title: "Node",
+            icon: <FaNodeJs />,
+            contentUrl: "https://www.youtube.com/embed/Oe421EPjeBE"
+          },
+          {
+            id: "python",
+            title: "Python + Django",
+            icon: <FaPython />,
+            contentUrl: "https://www.youtube.com/embed/F5mRW0jo-U4"
+          }
         ]
       }
     ]
@@ -34,19 +58,53 @@ const menu: MenuItem[] = [
       {
         id: "ux",
         title: "UX",
-        children: [{ id: "prototipagem", title: "Prototipagem" }]
+        icon: <FaUserAlt />,
+        children: [
+          {
+            id: "prototipagem",
+            title: "Prototipagem",
+            icon: <FaDraftingCompass />,
+            contentUrl: "https://www.youtube.com/embed/5W87z8NQ5i4"
+          }
+        ]
       }
     ]
   },
   {
     id: "jogos",
     title: "Desenvolvimento de Jogos",
-    children: [{ id: "unity", title: "Unity" }, { id: "unreal", title: "Unreal" }]
+    children: [
+      {
+        id: "unity",
+        title: "Unity",
+        icon: <SiUnity />,
+        contentUrl: "https://www.youtube.com/embed/IlKaB1etrik"
+      },
+      {
+        id: "unreal",
+        title: "Unreal",
+        icon: <SiUnrealengine />,
+        contentUrl: "https://www.youtube.com/embed/eRY2E44TYWM"
+      }
+    ]
   },
   {
     id: "banco",
     title: "Banco de Dados",
-    children: [{ id: "mysql", title: "MySQL" }, { id: "mongodb", title: "MongoDB" }]
+    children: [
+      {
+        id: "mysql",
+        title: "MySQL",
+        icon: <GrMysql />,
+        contentUrl: "https://www.youtube.com/embed/7S_tz1z_5bA"
+      },
+      {
+        id: "mongodb",
+        title: "MongoDB",
+        icon: <SiMongodb />,
+        contentUrl: "https://www.youtube.com/embed/pWbMrx5rVBE"
+      }
+    ]
   }
 ];
 
@@ -61,7 +119,7 @@ function MenuNode({
   item: MenuItem;
   openItem: string | null;
   setOpenItem: (id: string | null) => void;
-  onSelect: (t: string) => void;
+  onSelect: (item: MenuItem) => void;
   selected: string;
   depth?: number;
 }) {
@@ -71,13 +129,10 @@ function MenuNode({
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onSelect(item.title); // seleciona item
+    onSelect(item);
     if (hasChildren) {
-      if (depth === 0) {
-        setOpenItem(isOpen ? null : item.id); // acordeão principal
-      } else {
-        setLocalOpen(!localOpen); // submenu interno abre/fecha
-      }
+      if (depth === 0) setOpenItem(isOpen ? null : item.id);
+      else setLocalOpen(!localOpen);
     }
   };
 
@@ -91,6 +146,7 @@ function MenuNode({
         style={{ paddingLeft: 12 + depth * 12 }}
         aria-expanded={hasChildren ? isOpen : undefined}
       >
+        {item.icon && <span className="menu-icon">{item.icon}</span>}
         <span className="menu-title">{item.title}</span>
         {hasChildren && <span className="chev">{isOpen ? "▲" : "▼"}</span>}
       </button>
@@ -117,13 +173,13 @@ function MenuNode({
 }
 
 export default function App() {
-  const [selected, setSelected] = useState<string>("Selecione uma opção");
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [openItem, setOpenItem] = useState<string | null>(null);
 
   return (
     <div className="app-container">
       <aside className="sidebar">
-        <div className="brand"></div>
+        <div className="brand">Menu de Cursos</div>
         <nav>
           <ul className="menu-root">
             {menu.map((m) => (
@@ -132,8 +188,8 @@ export default function App() {
                 item={m}
                 openItem={openItem}
                 setOpenItem={setOpenItem}
-                onSelect={(t) => setSelected(t)}
-                selected={selected}
+                onSelect={(item) => setSelectedItem(item)}
+                selected={selectedItem?.title || ""}
               />
             ))}
           </ul>
@@ -141,8 +197,28 @@ export default function App() {
       </aside>
 
       <main className="content">
-        <h1>{selected}</h1>
-        <p>Conteúdo relacionado aparecerá aqui quando você selecionar uma opção.</p>
+        {selectedItem && selectedItem.contentUrl ? (
+          <div className="video-wrapper">
+            <div className="video-card">
+              <h1>{selectedItem.title}</h1>
+              <iframe
+                src={selectedItem.contentUrl}
+                title={selectedItem.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+              <p>Assista ao curso e pratique o que aprendeu!</p>
+            </div>
+          </div>
+        ) : (
+          <div className="video-wrapper">
+            <div className="video-card empty">
+              <h1>Selecione uma opção</h1>
+              <p>O conteúdo do curso aparecerá aqui.</p>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
