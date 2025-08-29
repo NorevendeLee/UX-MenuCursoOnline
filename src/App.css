@@ -1,0 +1,106 @@
+:root{
+  --sidebar-width: 300px;
+  --bg-sidebar-start: #0f1724;
+  --bg-sidebar-end: #1e293b;
+  --accent: #60a5fa;
+  --text: #e6eef8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+  background: #f6f8fb;
+}
+
+/* CONTAINER PRINCIPAL */
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-width);
+  background: linear-gradient(180deg, var(--bg-sidebar-start), var(--bg-sidebar-end));
+  color: var(--text);
+  padding: 22px;
+  box-shadow: 4px 0 18px rgba(2,6,23,0.45);
+  overflow-y: auto;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+  letter-spacing: 0.4px;
+}
+
+/* MENU */
+.menu-root, .menu-root ul {
+  list-style: none;
+}
+
+.menu-node { margin-bottom: 6px; }
+
+.menu-btn {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.08s ease;
+  font-size: 14px;
+}
+
+.menu-btn:hover { background: rgba(255,255,255,0.03); transform: translateY(-1px); }
+
+.menu-btn.selected {
+  background: rgba(96,165,250,0.15);
+  box-shadow: inset 0 0 0 1px rgba(96,165,250,0.08);
+  color: var(--accent);
+}
+
+.menu-btn.parent { font-weight: 600; }
+
+.menu-title { display: inline-block; }
+
+.chev { font-size: 12px; opacity: 0.9; margin-left: 8px; }
+
+/* SUBMENU */
+.submenu {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 300ms ease;
+  margin-top: 6px;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+.submenu.open { max-height: 600px; }
+
+.submenu ul { padding-left: 0; }
+
+/* CONTENT */
+.content {
+  flex: 1; /* ocupa todo o espaço restante à direita */
+  background: #f6f8fb;
+  padding: 36px;
+  color: #0f1724;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.content h1 { margin-top: 0; font-size: 28px; }
+.content p { color: #334155; }
